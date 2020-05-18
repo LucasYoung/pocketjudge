@@ -13,23 +13,34 @@ def _read_image(path):
 class BenchPressDataset(Dataset):
     def __init__(self, im_dir, transform):
         """
-        im_dir should be either "train" or "test"
+        im_dir should contain only folders with the data in it
+        Structure should look like this:
+        
+        --im_dir
+            --1
+                --good
+                --bad
+            --2
+                --good
+                --bad
+
         """
         self.transform = transform
         self.im_dir = im_dir
         self.paths = []
         self.labels = []
-        #load good images
-        good_dir = join(im_dir, "good")
-        good_image_paths = [join(good_dir, f) for f in listdir(good_dir) if isfile(join(good_dir, f)) and '.jpg' in f]
-        self.labels += [1 for _ in range(len(good_image_paths))]
-        self.paths += good_image_paths
-
-        #load bad images
-        bad_dir = join(im_dir, "bad")
-        bad_image_paths = [join(bad_dir, f) for f in listdir(bad_dir) if isfile(join(bad_dir, f)) and '.jpg' in f]
-        self.labels += [0 for _ in range(len(bad_image_paths))]
-        self.paths += bad_image_paths
+        for d in listdir(im_dir):
+            #load good images
+            good_dir = join(im_dir, d, "good")
+            good_image_paths = [join(good_dir, f) for f in listdir(good_dir) if isfile(join(good_dir, f)) and '.jpg' in f]
+            self.labels += [1 for _ in range(len(good_image_paths))]
+            self.paths += good_image_paths
+            
+            #load bad images
+            bad_dir = join(im_dir, d, "bad")
+            bad_image_paths = [join(bad_dir, f) for f in listdir(bad_dir) if isfile(join(bad_dir, f)) and '.jpg' in f]
+            self.labels += [0 for _ in range(len(bad_image_paths))]
+            self.paths += bad_image_paths
         
     def __len__(self):
         return len(self.labels)
