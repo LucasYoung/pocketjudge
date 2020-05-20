@@ -11,17 +11,7 @@ import pjdataset
 class StandardizeSizeTransform():
     def __init__(self):
         pass
-    """
-    def __call__(self, image):
-        if image.shape == (3, 640, 640):
-            return image
-        elif image.shape == (3, 360, 640):
-            black = torch.zeros([3, 140, 640], dtype=torch.float)
-            image = torch.cat([black, image, black], 1) # pad zeros along H axis
-            return image
-        else:
-            return None
-    """
+
     def __call__(self, image):
         if image.shape == (3, 640, 640):
             return image
