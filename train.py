@@ -33,7 +33,6 @@ class Train:
 
     def train(self):
         for cur_epoch in range(self.start_epoch, self.args.num_epochs):
-
             # Initialize tqdm
             tqdm_batch = tqdm(self.trainloader,
                               desc="Epoch-" + str(cur_epoch) + "-")
@@ -46,13 +45,10 @@ class Train:
 
             # Set the model to be in training mode (for dropout and batchnorm)
             self.model.train()
-
             for data, target in tqdm_batch:
-
                 if self.args.cuda:
                     data, target = data.cuda(), target.cuda()
                 data_var, target_var = Variable(data), Variable(target)
-
                 # Forward pass
                 output = self.model(data_var)
                 cur_loss = self.loss(output, target_var)
@@ -63,11 +59,10 @@ class Train:
                 self.optimizer.step()
 
                 # Top-1 and Top-5 Accuracy Calculation
-                cur_acc1, cur_acc5 = self.compute_accuracy(output.data, target, topk=(1, 5))
-                loss.update(cur_loss.data[0])
+                cur_acc1, cur_acc5 = self.compute_accuracy(output.data, target, topk=(1, 2))
+                loss.update(cur_loss.item())
                 top1.update(cur_acc1[0])
                 top5.update(cur_acc5[0])
-
             # Summary Writing
             self.summary_writer.add_scalar("epoch-loss", loss.avg, cur_epoch)
             self.summary_writer.add_scalar("epoch-top-1-acc", top1.avg, cur_epoch)
@@ -109,8 +104,8 @@ class Train:
             cur_loss = self.loss(output, target_var)
 
             # Top-1 and Top-5 Accuracy Calculation
-            cur_acc1, cur_acc5 = self.compute_accuracy(output.data, target, topk=(1, 5))
-            loss.update(cur_loss.data[0])
+            cur_acc1, cur_acc5 = self.compute_accuracy(output.data, target, topk=(1, 2))
+            loss.update(cur_loss.item())
             top1.update(cur_acc1[0])
             top5.update(cur_acc5[0])
 

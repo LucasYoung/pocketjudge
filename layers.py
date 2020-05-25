@@ -11,13 +11,13 @@ class InvertedResidualBlock(nn.Module):
         self.block = nn.Sequential(
             nn.Conv2d(in_channels, in_channels * expansion_factor, 1, bias=False),
             nn.BatchNorm2d(in_channels * expansion_factor),
-            nn.ReLU6(inplace=True),
+            nn.ReLU6(inplace=False),
 
             nn.Conv2d(in_channels * expansion_factor, in_channels * expansion_factor,
                       kernel_size, stride, 1,
                       groups=in_channels * expansion_factor, bias=False),
             nn.BatchNorm2d(in_channels * expansion_factor),
-            nn.ReLU6(inplace=True),
+            nn.ReLU6(inplace=False),
 
             nn.Conv2d(in_channels * expansion_factor, out_channels, 1,
                       bias=False),
@@ -62,7 +62,7 @@ def conv2d_bn_relu6(in_channels, out_channels, kernel_size=3, stride=2, dropout_
         nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding, bias=False),
         nn.BatchNorm2d(out_channels),
         # For efficiency, Dropout is placed before Relu.
-        nn.Dropout2d(dropout_prob, inplace=True),
+        nn.Dropout2d(dropout_prob, inplace=False),
         # Assumption: Relu6 is used everywhere.
-        nn.ReLU6(inplace=True)
+        nn.ReLU6(inplace=False)
     )

@@ -1,5 +1,4 @@
 import torch.backends.cudnn as cudnn
-
 from pjdata import BenchPressData
 from model import MobileNetV2
 from train import Train
@@ -39,7 +38,6 @@ def main():
         print("Testing...")
         trainer.test(data.testloader)
         print("Testing Finished\n")
-
 
 if __name__ == "__main__":
     main()

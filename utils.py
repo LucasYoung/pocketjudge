@@ -79,6 +79,18 @@ def calc_dataset_stats(dataset, axis=0, ep=1e-7):
     return (torch.mean(data, dim=axis) / 255.0).tolist(), (
             torch.std(data + ep, dim=axis) / 255.0).tolist()
 
+def calc_dataset_stats(dataset, axis=0, ep=1e-7):
+    rolling_mean = 0
+    variance = 0
+    n = len(dataset)
+    for i in dataset:
+        rolling_mean += torch.mean(i[0])
+    rolling_mean /= n
+    for i in dataset:
+        variance += torch.mean(i[0] ** 2) - rolling_mean
+    variance /= (n - 1)
+    variance ** 0.5
+    return rolling_mean.tolist() / 255, variance.tolist() / 255
 
 class AverageTracker:
     def __init__(self):
