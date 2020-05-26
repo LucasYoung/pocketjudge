@@ -87,7 +87,7 @@ def calc_dataset_stats(dataset, axis=0, ep=1e-7):
         rolling_mean += torch.mean(i[0])
     rolling_mean /= n
     for i in dataset:
-        variance += torch.mean(i[0] ** 2) - rolling_mean
+        variance += torch.mean(torch.sum(i[0] - rolling_mean.tolist()) ** 2)
     variance /= (n - 1)
     variance ** 0.5
     return rolling_mean.tolist() / 255, variance.tolist() / 255
