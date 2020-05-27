@@ -71,13 +71,13 @@ def create_experiment_dirs(exp_dir):
         exit(-1)
 
 
-def calc_dataset_stats(dataset, axis=0, ep=1e-7):
-    data = []
-    for i in dataset:
-        data.append(i[0])
-    data = torch.stack(data)
-    return (torch.mean(data, dim=axis) / 255.0).tolist(), (
-            torch.std(data + ep, dim=axis) / 255.0).tolist()
+#def calc_dataset_stats(dataset, axis=0, ep=1e-7):
+#    data = []
+#    for i in dataset:
+#        data.append(i[0])
+#    data = torch.stack(data)
+#    return (torch.mean(data, dim=axis) / 255.0).tolist(), (
+#            torch.std(data + ep, dim=axis) / 255.0).tolist()
 
 def calc_dataset_stats(dataset, axis=0, ep=1e-7):
     rolling_mean = 0

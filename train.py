@@ -41,7 +41,7 @@ class Train:
             self.adjust_learning_rate(self.optimizer, cur_epoch)
 
             # Meters for tracking the average values
-            loss, top1, top5 = AverageTracker(), AverageTracker(), AverageTracker()
+            loss, top1 = AverageTracker(), AverageTracker() 
 
             # Set the model to be in training mode (for dropout and batchnorm)
             self.model.train()
@@ -59,20 +59,25 @@ class Train:
                 self.optimizer.step()
 
                 # Top-1 and Top-5 Accuracy Calculation
-                cur_acc1, cur_acc5 = self.compute_accuracy(output.data, target, topk=(1, 2))
+                cur_acc1 = self.compute_accuracy(output.data, target)
                 loss.update(cur_loss.item())
                 top1.update(cur_acc1[0])
-                top5.update(cur_acc5[0])
+                # top5.update(cur_acc5[0])
             # Summary Writing
             self.summary_writer.add_scalar("epoch-loss", loss.avg, cur_epoch)
             self.summary_writer.add_scalar("epoch-top-1-acc", top1.avg, cur_epoch)
-            self.summary_writer.add_scalar("epoch-top-5-acc", top5.avg, cur_epoch)
+            # self.summary_writer.add_scalar("epoch-top-5-acc", top5.avg, cur_epoch)
 
             # Print in console
             tqdm_batch.close()
+            # print("Epoch-" + str(cur_epoch) + " | " + "loss: " + str(
+            #     loss.avg) + " - acc-top1: " + str(
+            #     top1.avg)[:7] + "- acc-top5: " + str(top5.avg)[:7])
+            
             print("Epoch-" + str(cur_epoch) + " | " + "loss: " + str(
-                loss.avg) + " - acc-top1: " + str(
-                top1.avg)[:7] + "- acc-top5: " + str(top5.avg)[:7])
+                loss.avg) + " - acc-top1: " + str(top1.avg.tolist()))
+            
+            
 
             # Evaluate on Validation Set
             if cur_epoch % self.args.test_every == 0 and self.valloader:
@@ -104,19 +109,22 @@ class Train:
             cur_loss = self.loss(output, target_var)
 
             # Top-1 and Top-5 Accuracy Calculation
-            cur_acc1, cur_acc5 = self.compute_accuracy(output.data, target, topk=(1, 2))
+            cur_acc1 = self.compute_accuracy(output.data, target)
             loss.update(cur_loss.item())
             top1.update(cur_acc1[0])
-            top5.update(cur_acc5[0])
+            # top5.update(cur_acc5[0])
 
         if cur_epoch != -1:
             # Summary Writing
             self.summary_writer.add_scalar("test-loss", loss.avg, cur_epoch)
             self.summary_writer.add_scalar("test-top-1-acc", top1.avg, cur_epoch)
-            self.summary_writer.add_scalar("test-top-5-acc", top5.avg, cur_epoch)
+            # self.summary_writer.add_scalar("test-top-5-acc", top5.avg, cur_epoch)
 
+        # print("Test Results" + " | " + "loss: " + str(loss.avg) + " - acc-top1: " + str(
+        #     top1.avg)[:7] + "- acc-top5: " + str(top5.avg)[:7])
         print("Test Results" + " | " + "loss: " + str(loss.avg) + " - acc-top1: " + str(
-            top1.avg)[:7] + "- acc-top5: " + str(top5.avg)[:7])
+            top1.avg.tolist()))
+
 
     def save_checkpoint(self, state, is_best, filename='checkpoint.pth.tar'):
         torch.save(state, self.args.checkpoint_dir + filename)
